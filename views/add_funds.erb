@@ -1,0 +1,13 @@
+<div>
+  <p>Curent Balance: <%= @balance %></p>
+</div>
+
+<div>
+  <form method="post" action="/add_funds">
+    <label>Funds to be Added: </label>
+    <input input="deposit_amount" type="number">
+    <button type="submit">Add Funds</button>
+  </form>
+</div>
+
+<%= @session %>

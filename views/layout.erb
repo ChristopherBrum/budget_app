@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Budget App</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/application.css">
+  </head>
+  <body>
+
+    <% if session[:message] %>
+      <p id="banner"><%= session.delete(:message) %></p>
+    <% end %>
+
+    <%= yield %>
+
+  </body>
+</html>
