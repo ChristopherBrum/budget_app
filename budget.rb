@@ -38,9 +38,7 @@ def determine_balance
 end 
 
 def add_funds(amount)
-  balance = session[:balance]
-
-  if balance.class == Integer
+  if session[:balance].class == Integer
     session[:balance] += amount.to_i
   else
     session[:balance] = amount.to_i 
@@ -68,6 +66,7 @@ end
 post '/add_funds' do
   add_funds(params[:deposit_amount])
   
+
   redirect '/'
 end
 
