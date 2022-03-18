@@ -17,12 +17,19 @@ NO_BALANCE = "No money!"
 ########## Classes ##########
 
 class Budget
-  def initialize
+  attr_reader :balance, :name
+
+  def initialize(name)
+    @balance = 0
+    @name = name
+    @categories = []
   end
 end
 
 class Category
-  def initialize
+  def initialize(title, amount)
+    @title = title
+    @amount = amount
   end
 end
 
@@ -34,11 +41,11 @@ end
 ########## Methods ##########
 
 def determine_balance
-  session[:balance].nil? ? NO_BALANCE : session[:balance]
+  session[:balance]== 0 ? NO_BALANCE : session[:balance]
 end 
 
 def add_funds(amount)
-  if session[:balance].class == Integer
+  if session[:budget].balance 
     session[:balance] += amount.to_i
   else
     session[:balance] = amount.to_i 
@@ -48,8 +55,8 @@ end
 ########## Routes ##########
 
 before do
+  @budget = session[:budget]
   @balance = determine_balance
-  session[:working] = true
   @session = session.inspect
 end
 
@@ -66,7 +73,11 @@ end
 post '/add_funds' do
   add_funds(params[:deposit_amount])
   
-
   redirect '/'
 end
 
+# Create a new budget
+post '/budget/create' do
+  session[:budget] = Budget.new(params[:budget_name])
+  redirect '/'
+end

@@ -1,18 +1,30 @@
-<div>
-  <p>Current Balance: <%= @balance %></p>
-  <form method="get" action="/add_funds">
-    <button type="submit">Add Funds</button>
-  </form>
-</div>
+<% if session[:budget] %>
+  <div>
+    <h1></h1>
+    <h2>Current Balance: <%= @budget.balance %></h2>
+    <form method="get" action="/add_funds">
+      <button type="submit">Add Funds</button>
+    </form>
+  </div>
 
-<div>
-  <form method="get" action="/add_category">
-    <button type="submit">Add Expense Category</button>
-  </form>
-</div>
+  <div>
+    <form method="get" action="/add_category">
+      <button type="submit">Add Expense Category</button>
+    </form>
+  </div>
 
-<div>
-  <form method="get" action="/add_transaction">
-    <button type="submit">Add Transaction</button>
-  </form>
-</div>
+  <div>
+    <form method="get" action="/add_transaction">
+      <button type="submit">Add Transaction</button>
+    </form>
+  </div>
+<% else %>
+  <div>
+    <h1>Create a Budget!</h1>
+    <form method="post" action="/budget/create">
+      <label>Whats the name of your budget?</label>
+      <input name="budget_name" type="text">
+      <button type="submit">Create Budget</button>
+    </form>
+  </div>
+<% end %>
