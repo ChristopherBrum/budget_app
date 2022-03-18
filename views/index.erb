@@ -1,8 +1,18 @@
 <div>
-  <p>Curent Balance: <%= @balance %></p>
+  <p>Current Balance: <%= @balance %></p>
   <form method="get" action="/add_funds">
     <button type="submit">Add Funds</button>
   </form>
 </div>
 
-<%= @session %>
+<div>
+  <form method="get" action="/add_category">
+    <button type="submit">Add Expense Category</button>
+  </form>
+</div>
+
+<div>
+  <form method="get" action="/add_transaction">
+    <button type="submit">Add Transaction</button>
+  </form>
+</div>

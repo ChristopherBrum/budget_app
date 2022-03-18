@@ -3,11 +3,16 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'tilt/erubis'
 
+
 configure do
   enable :sessions
-  # BCryptd from "secret"
-  set :session_secret, "$2a$12$pDQdMRa2yNfWPOqDtU.7vuqDkdhQ8M94pV/b6TRa0pfHyv8KOnXc6"
+  set :session_secret, 'session_secret_for_budget_app'
+  disable :protection
 end
+
+########## Constants ##########
+
+NO_BALANCE = "No money!"
 
 ########## Classes ##########
 
@@ -26,41 +31,43 @@ class Transaction
   end
 end
 
-before do
-  @session = session
-end
-
 ########## Methods ##########
 
-def logged_in?
-  !session[:user].nil?
+def determine_balance
+  session[:balance].nil? ? NO_BALANCE : session[:balance]
+end 
+
+def add_funds(amount)
+  balance = session[:balance]
+
+  if balance.class == Integer
+    session[:balance] += amount.to_i
+  else
+    session[:balance] = amount.to_i 
+  end
 end
 
 ########## Routes ##########
 
-get '/' do
-  unless logged_in?
-    redirect '/login'
-  end
-
-  erb :index
+before do
+  @balance = determine_balance
+  session[:working] = true
+  @session = session.inspect
 end
 
-# Display login form
-get '/login' do
-  
-  
-  erb :login
+get '/' do
+  erb :index
 end
 
 # Display form to add funds
 get '/add_funds' do
-
   erb :add_funds
 end
 
 # add funds to current balance
 post '/add_funds' do
-
+  add_funds(params[:deposit_amount])
+  
   redirect '/'
 end
+
