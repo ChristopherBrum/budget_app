@@ -12,24 +12,40 @@ end
 
 ########## Constants ##########
 
-NO_BALANCE = "No money!"
-
 ########## Classes ##########
 
 class Budget
-  attr_reader :balance, :name
+  attr_reader :name
+  attr_accessor :balance, :categories
 
   def initialize(name)
     @balance = 0
     @name = name
     @categories = []
+    @transactions = []
+  end
+
+  def new_category_id
+    return 1 if @categories.empty?
+
+    max = @categories.max_by { |category| category.id }
+    max.id + 1
+  end
+
+  def calc_expenses
+    total = 0
+    @categories.each { |category| total += category.amount }
+    total
   end
 end
 
 class Category
-  def initialize(title, amount)
+  attr_reader :title, :amount, :id
+
+  def initialize(title, amount, id)
     @title = title
     @amount = amount
+    @id = id
   end
 end
 
@@ -40,23 +56,14 @@ end
 
 ########## Methods ##########
 
-def determine_balance
-  session[:balance]== 0 ? NO_BALANCE : session[:balance]
-end 
-
 def add_funds(amount)
-  if session[:budget].balance 
-    session[:balance] += amount.to_i
-  else
-    session[:balance] = amount.to_i 
-  end
+  @budget.balance = @budget.balance + amount.to_i
 end
 
 ########## Routes ##########
 
 before do
   @budget = session[:budget]
-  @balance = determine_balance
   @session = session.inspect
 end
 
@@ -71,13 +78,60 @@ end
 
 # add funds to current balance
 post '/add_funds' do
-  add_funds(params[:deposit_amount])
-  
+  deposit_amount = params[:deposit_amount].to_i
+
+  if deposit_amount > 0
+    add_funds(deposit_amount)
+    session[:message] = "You've successfully added funds."
+    redirect '/'
+  elsif deposit_amount < 0
+    add_funds(deposit_amount)
+    session[:message] = "You've successfully deducted funds."
+    redirect '/'
+  else
+    session[:message] = "You must enter a positive or negative number. "
+    erb :add_funds
+  end
+end
+
+# display new category form
+get '/category/add' do
+  erb :add_category
+end
+
+# Create new category
+post '/category/add' do
+  title = params[:cat_title]
+  allotted_funds = params[:cat_allotted_funds].to_i
+  id = @budget.new_category_id
+
+  @budget.categories << Category.new(title, allotted_funds, id)
+  session[:message] = "The category #{title} has been created."
   redirect '/'
+end
+
+# Display form to edit category
+get '/category/:category_id/edit' do
+  @id = params[:category_id]
+  puts params
+  erb :edit_category
+end
+
+post '/category/:category_id/edit' do
+  
+end
+
+# Delete category
+post '/category/:category_id/delete' do
 end
 
 # Create a new budget
 post '/budget/create' do
   session[:budget] = Budget.new(params[:budget_name])
   redirect '/'
+end
+
+# Delete the budget
+post "/budget/delete" do
+
 end

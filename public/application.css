@@ -1,6 +1,30 @@
+body {
+  background-color: rgb(80, 79, 79);
+  color: rgb(255, 240, 218);
+}
+
 #banner {
   background-color: lightsalmon;
 }
+
+/* navbar styling */
+
+#menu-container {
+  display: flex;
+}
+
+/* category list styling */
+
+li.category-item {
+  display: flex;
+  padding-top: .75em;
+}
+
+.category-item {
+  margin-left: 1.5em;
+}
+
+/* login styling */
 
 #login-container {
   display: flex;

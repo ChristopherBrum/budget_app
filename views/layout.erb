@@ -10,13 +10,18 @@
   </head>
   <body>
 
+    <% if session[:budget] %>
+      <h1><%= @budget.name %></h1>
+      <h2>Current Balance: <%= @budget.balance %></h2>
+    <% else %>
+      <h1>Welcome to Budget App</h1>
+    <% end %>
+
     <% if session[:message] %>
       <p id="banner"><%= session.delete(:message) %></p>
     <% end %>
 
     <%= yield %>
-
-    <%= @session %>
 
   </body>
 </html>
