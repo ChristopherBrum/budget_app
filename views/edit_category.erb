@@ -1,14 +1,14 @@
 <div>
-  <h3>Edit <%=  %></h3>
-  <form method="post" action="/category/add">
+  <h3>Edit <%= @category.title %></h3>
+  <form method="post" action="/category/<%= @id %>/edit">
     <label>Category Title: </label>
-    <input name="cat_title" type="text" values=">
+    <input name="cat_title" type="text" value="<%= @category.title %>">
     <label>Allotted Monthly Funds for Category: </label>
-    <input name="cat_allotted_funds" type="number">
-    <button type="submit">Create New Category</button>
+    <input name="cat_allotted_funds" type="number" value="<%= @category.amount %>">
+    <button type="submit">Update Category</button>
   </form>
 </div>
 
-<%= @id %>
-
-<%= @budget.categories[1] %>
+<%= @category.id %>
+<%= @category.title %>
+<%= @category.amount %>

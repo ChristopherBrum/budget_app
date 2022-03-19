@@ -33,7 +33,6 @@
           <p class="category-item"><%= category.title %></p>
           <p class="category-item"><%= category.amount %></p>
           <form method="get" action="/category/<%= category.id %>/edit">
-            <input name="category_id" type="hidden" value="<%= category.id%>">
             <button class="category-item" type="submit">Edit</button>
           </form>
           <form method="post" action="/category/<%= category.id %>/delete">

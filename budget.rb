@@ -40,7 +40,7 @@ class Budget
 end
 
 class Category
-  attr_reader :title, :amount, :id
+  attr_accessor :title, :amount, :id
 
   def initialize(title, amount, id)
     @title = title
@@ -60,6 +60,9 @@ def add_funds(amount)
   @budget.balance = @budget.balance + amount.to_i
 end
 
+def select_category(id)
+  @budget.categories.select { |category| category.id == id }.first
+end
 ########## Routes ##########
 
 before do
@@ -112,13 +115,20 @@ end
 
 # Display form to edit category
 get '/category/:category_id/edit' do
-  @id = params[:category_id]
-  puts params
+  @id = params[:category_id].to_i
+  @category = select_category(@id)
+
   erb :edit_category
 end
 
 post '/category/:category_id/edit' do
-  
+  id = params[:category_id].to_i
+  category = select_category(id)
+
+  category.title = params[:cat_title]
+  category.amount = params[:cat_allotted_funds].to_i
+  session[:message] = "#{category.title} has been updated."
+  redirect '/'
 end
 
 # Delete category
