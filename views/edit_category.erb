@@ -2,13 +2,15 @@
   <h3>Edit <%= @category.title %></h3>
   <form method="post" action="/category/<%= @id %>/edit">
     <label>Category Title: </label>
-    <input name="cat_title" type="text" value="<%= @category.title %>">
+    <input name="cat_title" type="text" value="<%= @category.title %>"><br>
     <label>Allotted Monthly Funds for Category: </label>
-    <input name="cat_allotted_funds" type="number" value="<%= @category.amount %>">
+    <input name="cat_allotted_funds" type="number" value="<%= @category.amount %>"><br>
     <button type="submit">Update Category</button>
   </form>
+  <form method="post" action="/category/<%= @id %>/delete">
+    <button type="submit">Delete</button>
+  </form>
+  <form method="get" action="/">
+    <button type="submit">Home</button>
+  </form>
 </div>
-
-<%= @category.id %>
-<%= @category.title %>
-<%= @category.amount %>

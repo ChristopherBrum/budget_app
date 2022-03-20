@@ -133,6 +133,7 @@ end
 
 # Delete category
 post '/category/:category_id/delete' do
+  
 end
 
 # Create a new budget
