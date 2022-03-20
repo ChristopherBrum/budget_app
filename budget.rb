@@ -3,7 +3,6 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'tilt/erubis'
 
-
 configure do
   enable :sessions
   set :session_secret, 'session_secret_for_budget_app'
@@ -25,17 +24,43 @@ class Budget
     @transactions = []
   end
 
-  def new_category_id
-    return 1 if @categories.empty?
+  def new_category(title, allotted_amt)
+    id = new_category_id
+    @categories << Category.new(title, allotted_amt, id)
+  end
 
-    max = @categories.max_by { |category| category.id }
-    max.id + 1
+  def category_title(id)
+    @categories.each do |category|
+      return category.title if category.id == id
+    end
+    "A category"
   end
 
   def calc_expenses
     total = 0
     @categories.each { |category| total += category.amount }
     total
+  end
+
+  def delete_category(id)
+    index = nil
+
+    @categories.each_with_index do |category, idx|
+      if category.id == id
+        index = idx
+      end
+    end
+
+    @categories.delete_at(index)
+  end
+
+  private
+
+  def new_category_id
+    return 1 if @categories.empty?
+
+    max = @categories.max_by { |category| category.id }
+    max.id + 1
   end
 end
 
@@ -106,19 +131,18 @@ end
 post '/category/add' do
   title = params[:cat_title]
   allotted_funds = params[:cat_allotted_funds].to_i
-  id = @budget.new_category_id
 
-  @budget.categories << Category.new(title, allotted_funds, id)
+  @budget.new_category(title, allotted_funds)
   session[:message] = "The category #{title} has been created."
   redirect '/'
 end
 
 # Display form to edit category
-get '/category/:category_id/edit' do
+get '/category/:category_id' do
   @id = params[:category_id].to_i
   @category = select_category(@id)
 
-  erb :edit_category
+  erb :category
 end
 
 post '/category/:category_id/edit' do
@@ -131,9 +155,20 @@ post '/category/:category_id/edit' do
   redirect '/'
 end
 
+# Delete a category
+def delete_category(id)
+  id = params[:category_id].to_i
+  title = @budget.category_title(id)
+  
+  @budget.delete_category(id)
+  session[:message] = "#{title} has been deleted."
+  redirect '/'
+end
+
 # Delete category
 post '/category/:category_id/delete' do
-  
+  id  = params[:category_id]
+  delete_category(@budget.categories)
 end
 
 # Create a new budget

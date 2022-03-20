@@ -29,11 +29,10 @@
     <ul>
       <% @budget.categories.each do |category| %>
         <li class="category-item">
-          <p class="category-item">ID: <%= category.id %></p>
           <p class="category-item"><%= category.title %></p>
           <p class="category-item"><%= category.amount %></p>
-          <form method="get" action="/category/<%= category.id %>/edit">
-            <button class="category-item" type="submit">Edit</button>
+          <form method="get" action="/category/<%= category.id %>">
+            <button class="category-item" type="submit">View</button>
           </form>
           <form method="post" action="/category/<%= category.id %>/delete">
             <button class="category-item" type="submit">Delete</button>
@@ -42,7 +41,7 @@
       <% end %>
     </ul>
 
-    <h3>Combined Category Expenses: <%= @budget.calc_expenses %></h3>
+    <h3>Monthly Expenses: <%= @budget.calc_expenses %></h3>
   </div>
 
 <% else %>
