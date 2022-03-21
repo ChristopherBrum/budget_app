@@ -117,6 +117,23 @@ end
 def select_category(id)
   @budget.categories.select { |category| category.id == id }.first
 end
+
+def all_transactions
+  @budget.categories.each_with_object([]) do |category, array|
+    category.transactions.each { |transaction| array << transaction }
+  end
+end
+
+def transactions_total
+  all_transactions.map do |transaction|
+    transaction.amount.to_i
+  end.sum
+end
+
+def current_balance
+  @budget.balance - transactions_total
+end
+
 ########## Routes ##########
 
 before do
@@ -170,6 +187,10 @@ post '/category/:category_id/delete' do
 end
 
 ########## TRANSACTIONS ##########
+
+get '/transaction/add' do
+  erb :add_transaction
+end
 
 post '/transaction/create' do
   category = params[:category]

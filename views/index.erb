@@ -8,7 +8,7 @@
         <button class="btn" type="submit">Add Expense Category</button>
       </form>
 
-      <form method="get" action="/add_transaction">
+      <form method="get" action="/transaction/add">
         <button class="btn" type="submit">Add Transaction</button>
       </form>
 
@@ -23,7 +23,7 @@
       <% @budget.categories.each do |category| %>
         <li class="category-item">
           <p class="category-item"><%= category.title %></p>
-          <p class="category-item"><%= category.amount %></p>
+          <p class="category-item">$<%= category.amount %></p>
           <form method="get" action="/category/<%= category.id %>">
             <button class="category-item btn" type="submit">View</button>
           </form>
@@ -33,10 +33,6 @@
         </li>
       <% end %>
     </ul>
-  </div>
-
-  <div>
-    <h3>Monthly Expenses: <%= @budget.calc_expenses %></h3>
   </div>
 
   <div>
@@ -54,6 +50,19 @@
       <input name="transaction_amt" type="number">
       <button type="submit">Add Transaction</button>
     </form>
+  </div>
+
+  <div>
+  <h3>Transactions Total: $<%= transactions_total %></h3>
+    <ul>
+      <% all_transactions.each do |transaction| %>
+        <li>
+          <%= transaction.description.downcase %>
+          $<%= transaction.amount %>
+          <%= transaction.category %>
+        </li>
+      <% end %>
+    </ul>
   </div>
 
 <% else %>

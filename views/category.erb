@@ -5,10 +5,10 @@
     <input name="cat_title" type="text" value="<%= @category.title %>"><br>
     <label>Allotted Monthly Funds for Category: </label>
     <input name="cat_allotted_funds" type="number" value="<%= @category.amount %>"><br>
-    <button type="submit">Update Category</button>
+    <button class="btn" type="submit">Update Category</button>
   </form>
   <form method="post" action="/category/<%= @id %>/delete">
-    <button type="submit">Delete</button>
+    <button class="btn stacked-btn" type="submit">Delete Category</button>
   </form>
   
 </div>
@@ -26,7 +26,7 @@
     <input name="description" type="text">
     <label>Transaction Amount:</label>
     <input name="transaction_amt" type="number">
-    <button type="submit">Add Transaction</button>
+    <button class="btn" type="submit">Add Transaction</button>
   </form>
 </div>
 
