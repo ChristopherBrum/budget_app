@@ -14,3 +14,32 @@
     <button type="submit">Home</button>
   </form>
 </div>
+
+<div>
+  <h3>Add Transaction:</h3>
+  <form method="post" action="/transaction/create">
+    <label for="category">Category:</label>
+    <select name="category">
+      <% @budget.categories.each do |category| %>
+        <option value="<%= category.title %>"><%= category.title %></option>        
+      <% end %>
+    </select>
+    <label>Description:</label>
+    <input name="description" type="text">
+    <label>Transaction Amount:</label>
+    <input name="transaction_amt" type="number">
+    <button type="submit">Add Transaction</button>
+  </form>
+</div>
+
+<div>
+  <h3>This should be the Categories Transaction Header</h3>
+  <ul>
+    <% @category.transactions.each do |transaction| %>
+      <li>
+        <%= transaction.amount %>
+        <%= transaction.description %>
+      </li>
+    <% end %>
+  </ul>
+</div>

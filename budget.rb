@@ -3,6 +3,8 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'tilt/erubis'
 
+require 'pry'
+
 configure do
   enable :sessions
   set :session_secret, 'session_secret_for_budget_app'
@@ -21,7 +23,6 @@ class Budget
     @balance = 0
     @name = name
     @categories = []
-    @transactions = []
   end
 
   def new_category(title, allotted_amt)
@@ -29,11 +30,14 @@ class Budget
     @categories << Category.new(title, allotted_amt, id)
   end
 
-  def category_title(id)
+  def find_category(id)
     @categories.each do |category|
-      return category.title if category.id == id
+      return category if category.id == id
     end
-    "A category"
+  end
+
+  def find_category_by_title(given_title)
+    @categories.select { |category| category.title == given_title }.first
   end
 
   def calc_expenses
@@ -65,17 +69,42 @@ class Budget
 end
 
 class Category
-  attr_accessor :title, :amount, :id
+  attr_accessor :title, :amount, :id, :transactions
 
   def initialize(title, amount, id)
     @title = title
     @amount = amount
     @id = id
+    @transactions = []
+  end
+
+  def new_transaction(title, description, amount)
+    id = new_transaction_id
+    @transactions << Transaction.new(title, description, amount, id)
+  end
+
+  def find_transaction(id)
+
+  end
+
+  private
+
+  def new_transaction_id
+    return 1 if @transactions.empty?
+
+    max = @transactions.max_by { |category| category.id }
+    max.id + 1
   end
 end
 
 class Transaction
-  def initialize
+  attr_reader :category, :description, :amount, :id
+
+  def initialize(category, description, amount, id)
+    @category = category
+    @description = description
+    @amount = amount
+    @id = id
   end
 end
 
@@ -99,36 +128,15 @@ get '/' do
   erb :index
 end
 
-# Display form to add funds
-get '/add_funds' do
-  erb :add_funds
-end
-
-# add funds to current balance
-post '/add_funds' do
-  deposit_amount = params[:deposit_amount].to_i
-
-  if deposit_amount > 0
-    add_funds(deposit_amount)
-    session[:message] = "You've successfully added funds."
-    redirect '/'
-  elsif deposit_amount < 0
-    add_funds(deposit_amount)
-    session[:message] = "You've successfully deducted funds."
-    redirect '/'
-  else
-    session[:message] = "You must enter a positive or negative number. "
-    erb :add_funds
-  end
-end
+########## CATEGORY ##########
 
 # display new category form
-get '/category/add' do
+get '/category/new' do
   erb :add_category
 end
 
 # Create new category
-post '/category/add' do
+post '/category/create' do
   title = params[:cat_title]
   allotted_funds = params[:cat_allotted_funds].to_i
 
@@ -155,20 +163,51 @@ post '/category/:category_id/edit' do
   redirect '/'
 end
 
-# Delete a category
-def delete_category(id)
-  id = params[:category_id].to_i
-  title = @budget.category_title(id)
-  
-  @budget.delete_category(id)
-  session[:message] = "#{title} has been deleted."
-  redirect '/'
-end
-
 # Delete category
 post '/category/:category_id/delete' do
   id  = params[:category_id]
   delete_category(@budget.categories)
+end
+
+########## TRANSACTIONS ##########
+
+post '/transaction/create' do
+  category = params[:category]
+  description = params[:description]
+  amount = params[:transaction_amt].to_i
+  category = @budget.find_category_by_title(category)
+
+  category.new_transaction(category, description, amount)
+  session[:message] = "A new transaction has been entered."
+
+  puts params ## not needed
+  
+  redirect '/'
+end
+
+########## BUDGET ##########
+
+# Display form to add funds
+get '/budget/add_funds' do
+  erb :add_funds
+end
+
+# add funds to current balance
+post '/budget/add_funds' do
+  deposit_amount = params[:deposit_amount].to_i
+
+  if deposit_amount > 0
+    add_funds(deposit_amount)
+    session[:message] = "You've successfully added funds."
+    redirect '/'
+  elsif deposit_amount < 0
+    add_funds(deposit_amount)
+    session[:message] = "You've successfully deducted funds."
+    redirect '/'
+  else
+    session[:message] = "You must enter a positive or negative number. "
+    erb :add_funds
+  end
 end
 
 # Create a new budget
@@ -179,5 +218,6 @@ end
 
 # Delete the budget
 post "/budget/delete" do
-
+  session.delete(:budget)
+  redirect '/'
 end

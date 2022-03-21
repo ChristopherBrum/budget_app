@@ -1,13 +1,13 @@
 <% if session[:budget] %>
   <div id="menu-container">
     <div>
-      <form method="get" action="/add_funds">
+      <form method="get" action="/budget/add_funds">
         <button type="submit">Add Funds</button>
       </form>
     </div>
 
     <div>
-      <form method="get" action="/category/add">
+      <form method="get" action="/category/new">
         <button type="submit">Add Expense Category</button>
       </form>
     </div>
@@ -40,8 +40,25 @@
         </li>
       <% end %>
     </ul>
+  </div>
 
-    <h3>Monthly Expenses: <%= @budget.calc_expenses %></h3>
+  <h3>Monthly Expenses: <%= @budget.calc_expenses %></h3>
+
+  <div>
+    <h3>Add Transaction:</h3>
+    <form method="post" action="/transaction/create">
+      <label for="category">Category:</label>
+      <select name="category">
+        <% @budget.categories.each do |category| %>
+          <option value="<%= category.title %>"><%= category.title %></option>        
+        <% end %>
+      </select>
+      <label>Description:</label>
+      <input name="description" type="text">
+      <label>Transaction Amount:</label>
+      <input name="transaction_amt" type="number">
+      <button type="submit">Add Transaction</button>
+    </form>
   </div>
 
 <% else %>
