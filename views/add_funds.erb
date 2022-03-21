@@ -1,7 +1,7 @@
 <div>
-<h3>Add Funds:</h3>
+<h3>Add or Deduct Funds:</h3>
   <form method="post" action="/budget/add_funds">
-    <label>Funds to be Added: </label>
+    <label>Amount to be added or deducted: </label>
     <input name="deposit_amount" type="number">
     <button class="btn" type="submit">Add Funds</button>
   </form>
@@ -9,13 +9,24 @@
 
 <div>
 <h3>Funds History:</h3>
-  <ul>
-    <% @budget.funds_log.each do |fund_entry| %>
-      <li>
-        $<%= fund_entry[:amount] %> -
-        <%= fund_entry[:type].capitalize %> -
-        <%= fund_entry[:date].strftime("%m/%d/%Y at %I:%M%p") %>
-      </li>
-    <% end %>
-  </ul>
+  <table>
+    <thead>
+      <tr>
+        <th class="table-head">Amount</th>
+        <th class="table-head">Type</th>
+        <th class="table-head">Date</th>
+        <th class="table-head">Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @budget.funds_log.each do |fund_entry| %>
+        <tr>
+          <td>$<%= fund_entry[:amount] %></td>
+          <td><%= fund_entry[:type].capitalize %></td>
+          <td><%= fund_entry[:date].strftime("%m/%d/%Y") %></td>
+          <td><%= fund_entry[:date].strftime("%I:%M%p") %></td>  
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>

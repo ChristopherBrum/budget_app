@@ -68,9 +68,9 @@ class Budget
 
   def add_funds_to_log(amount)
     if amount > 0
-      @funds_log << { amount: amount, type: "deposit", date: DateTime.now }
+      @funds_log << { amount: amount, type: "added", date: DateTime.now }
     elsif amount < 0
-      @funds_log << { amount: amount, type: "withdraw", date: DateTime.now }
+      @funds_log << { amount: amount, type: "deducted", date: DateTime.now }
     end
   end
 

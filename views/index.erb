@@ -18,25 +18,43 @@
   </div>
 
   <div>
-    <h3>Categories:</h3>
+    <h3>Budget Categories:</h3>
     <ul>
-      <% @budget.categories.each do |category| %>
-        <li class="category-item">
-          <p class="category-item">$<%= category.amount %></p>
-          <p class="category-item"><%= category.title %></p>
-          <form method="get" action="/category/<%= category.id %>">
-            <button class="category-item btn" type="submit">View</button>
-          </form>
-          <form method="post" action="/category/<%= category.id %>/delete">
-            <button class="category-item btn" type="submit">Delete</button>
-          </form>
-        </li>
-      <% end %>
+      
     </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="table-head">Amount</th>
+          <th class="table-head categories">Category</th>
+          <th class="table-head buttons"></th>
+          <th class="table-head buttons"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @budget.categories.each do |category| %>
+          <tr>
+            <td>$<%= category.amount %></td>
+            <td><%= category.title %></td>
+            <td class="buttons">
+              <form method="get" action="/category/<%= category.id %>">
+                <button class="category-item btn" type="submit">View</button>
+              </form>
+            </td>
+            <td class="buttons">
+              <form method="post" action="/category/<%= category.id %>/delete">
+                <button class="category-item btn" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 
   <div>
-    <h3>Add Transaction:</h3>
+    <h3>Add a Transaction:</h3>
     <form method="post" action="/transaction/create">
       <label for="category">Category:</label>
       <select name="category">
@@ -54,15 +72,24 @@
 
   <div>
   <h3>Transactions Total: $<%= transactions_total %></h3>
-    <ul>
-      <% all_transactions.each do |transaction| %>
-        <li>
-          $<%= transaction.amount %>
-          <%= transaction.description.downcase %>
-          <%= transaction.category %>
-        </li>
-      <% end %>
-    </ul>
+    <table>
+      <thead>
+        <tr>
+          <th class="table-head">Amount</th>
+          <th class="table-head">Description</th>
+          <th class="table-head">Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% all_transactions.each do |transaction| %>
+          <tr>
+            <td>$<%= transaction.amount %></td>
+            <td><%= transaction.description.downcase %></td>
+            <td><%= transaction.category %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 
 <% else %>
