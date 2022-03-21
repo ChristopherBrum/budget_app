@@ -31,7 +31,7 @@
 </div>
 
 <div>
-  <h3>This should be the Categories Transaction Header</h3>
+  <h3><%= @category.title %> Transactions:</h3>
   <ul>
     <% @category.transactions.each do |transaction| %>
       <li>

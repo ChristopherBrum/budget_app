@@ -20,7 +20,13 @@
         <h5>Funds Added: $<%= @budget.balance %></h5>
         <h5>Monthly Expenses: $<%= @budget.calc_expenses %></h5>
         <h5>Transactions Total: $<%= transactions_total %></h5>
-        <h3>Current Balance: $<%= current_balance %></h3>
+        <% if current_balance > 0 %>
+          <h3 class="bal green">Current Balance: <strong>$<%= current_balance %></strong></h3>
+        <% elsif current_balance < 0 %>  
+          <h3 class="bal red">Current Balance: $<strong><%= current_balance %></strong></h3>
+        <% else %>
+          <h3 class="bal">Current Balance: $<strong><%= current_balance %></strong></h3>
+        <% end %>
         <form method="get" action="/">
           <button class="btn" type="submit">Home</button>
         </form>

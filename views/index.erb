@@ -22,8 +22,8 @@
     <ul>
       <% @budget.categories.each do |category| %>
         <li class="category-item">
-          <p class="category-item"><%= category.title %></p>
           <p class="category-item">$<%= category.amount %></p>
+          <p class="category-item"><%= category.title %></p>
           <form method="get" action="/category/<%= category.id %>">
             <button class="category-item btn" type="submit">View</button>
           </form>
@@ -48,7 +48,7 @@
       <input name="description" type="text">
       <label>Transaction Amount:</label>
       <input name="transaction_amt" type="number">
-      <button type="submit">Add Transaction</button>
+      <button class="btn stacked-btn" type="submit">Add Transaction</button>
     </form>
   </div>
 
@@ -57,8 +57,8 @@
     <ul>
       <% all_transactions.each do |transaction| %>
         <li>
-          <%= transaction.description.downcase %>
           $<%= transaction.amount %>
+          <%= transaction.description.downcase %>
           <%= transaction.category %>
         </li>
       <% end %>
