@@ -1,48 +1,43 @@
 <% if session[:budget] %>
   <div id="menu-container">
-    <div>
       <form method="get" action="/budget/add_funds">
-        <button type="submit">Add Funds</button>
+        <button class="btn" type="submit">Add Funds</button>
       </form>
-    </div>
 
-    <div>
       <form method="get" action="/category/new">
-        <button type="submit">Add Expense Category</button>
+        <button class="btn" type="submit">Add Expense Category</button>
       </form>
-    </div>
 
-    <div>
       <form method="get" action="/add_transaction">
-        <button type="submit">Add Transaction</button>
+        <button class="btn" type="submit">Add Transaction</button>
       </form>
-    </div>
 
-    <div>
       <form method="post" action="/budget/delete">
-        <button type="submit">Delete Budget</button>
+        <button class="btn" type="submit">Delete Budget</button>
       </form>
-    </div>
   </div>
 
   <div>
+    <h3>Categories:</h3>
     <ul>
       <% @budget.categories.each do |category| %>
         <li class="category-item">
           <p class="category-item"><%= category.title %></p>
           <p class="category-item"><%= category.amount %></p>
           <form method="get" action="/category/<%= category.id %>">
-            <button class="category-item" type="submit">View</button>
+            <button class="category-item btn" type="submit">View</button>
           </form>
           <form method="post" action="/category/<%= category.id %>/delete">
-            <button class="category-item" type="submit">Delete</button>
+            <button class="category-item btn" type="submit">Delete</button>
           </form>
         </li>
       <% end %>
     </ul>
   </div>
 
-  <h3>Monthly Expenses: <%= @budget.calc_expenses %></h3>
+  <div>
+    <h3>Monthly Expenses: <%= @budget.calc_expenses %></h3>
+  </div>
 
   <div>
     <h3>Add Transaction:</h3>

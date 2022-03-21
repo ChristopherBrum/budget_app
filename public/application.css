@@ -1,11 +1,27 @@
 #banner {
-  background-color: lightsalmon;
+  background-color: rgb(122, 255, 164);
+  padding: .5em 2em;
 }
 
 /* navbar styling */
 
 #menu-container {
   display: flex;
+}
+
+button.btn {
+  margin: 0 .25em;
+  border: 1.5px solid #303030;
+  border-radius: 5px;
+  box-shadow: 2px 2px 7px 1px #969696;
+}
+
+div {
+  margin: 1em;
+  padding: 2em;
+  border: 2px solid #c164fa;
+  box-shadow: 2px 2px 7px 1px #969696;
+  border-radius: 5px;
 }
 
 /* category list styling */
