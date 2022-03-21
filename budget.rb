@@ -17,12 +17,18 @@ end
 
 class Budget
   attr_reader :name
-  attr_accessor :balance, :categories
+  attr_accessor :balance, :categories, :funds_log
 
   def initialize(name)
     @balance = 0
     @name = name
     @categories = []
+    @funds_log = []
+  end
+
+  def add_funds(amount)
+    self.balance = balance + amount.to_i
+    add_funds_to_log(amount)
   end
 
   def new_category(title, allotted_amt)
@@ -59,6 +65,14 @@ class Budget
   end
 
   private
+
+  def add_funds_to_log(amount)
+    if amount > 0
+      @funds_log << { amount: amount, type: "deposit", date: DateTime.now }
+    elsif amount < 0
+      @funds_log << { amount: amount, type: "withdraw", date: DateTime.now }
+    end
+  end
 
   def new_category_id
     return 1 if @categories.empty?
@@ -110,9 +124,9 @@ end
 
 ########## Methods ##########
 
-def add_funds(amount)
-  @budget.balance = @budget.balance + amount.to_i
-end
+# def add_funds(amount)
+#   @budget.balance = @budget.balance + amount.to_i
+# end
 
 def select_category(id)
   @budget.categories.select { |category| category.id == id }.first
@@ -218,11 +232,11 @@ post '/budget/add_funds' do
   deposit_amount = params[:deposit_amount].to_i
 
   if deposit_amount > 0
-    add_funds(deposit_amount)
+    @budget.add_funds(deposit_amount)
     session[:message] = "You've successfully added funds."
     redirect '/'
   elsif deposit_amount < 0
-    add_funds(deposit_amount)
+    @budget.add_funds(deposit_amount)
     session[:message] = "You've successfully deducted funds."
     redirect '/'
   else

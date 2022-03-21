@@ -6,3 +6,16 @@
     <button class="btn" type="submit">Add Funds</button>
   </form>
 </div>
+
+<div>
+<h3>Funds History:</h3>
+  <ul>
+    <% @budget.funds_log.each do |fund_entry| %>
+      <li>
+        $<%= fund_entry[:amount] %> -
+        <%= fund_entry[:type].capitalize %> -
+        <%= fund_entry[:date].strftime("%m/%d/%Y at %I:%M%p") %>
+      </li>
+    <% end %>
+  </ul>
+</div>
