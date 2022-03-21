@@ -1,28 +1,24 @@
 <% if session[:budget] %>
   <div id="menu-container">
       <form method="get" action="/budget/add_funds">
-        <button class="btn" type="submit">Add Funds</button>
+        <button class="btn btn-nav" type="submit">Add Funds</button>
       </form>
 
       <form method="get" action="/category/new">
-        <button class="btn" type="submit">Add Expense Category</button>
+        <button class="btn btn-nav" type="submit">Add Expense Category</button>
       </form>
 
       <form method="get" action="/transaction/add">
-        <button class="btn" type="submit">Add Transaction</button>
+        <button class="btn btn-nav" type="submit">Add Transaction</button>
       </form>
 
       <form method="post" action="/budget/delete">
-        <button class="btn" type="submit">Delete Budget</button>
+        <button class="btn btn-nav" type="submit">Delete Budget</button>
       </form>
   </div>
 
   <div>
     <h3>Budget Categories:</h3>
-    <ul>
-      
-    </ul>
-
     <table>
       <thead>
         <tr>
@@ -51,6 +47,7 @@
         <% end %>
       </tbody>
     </table>
+    <h3>Monthly Expenses: $<%= @budget.calc_expenses %></h3>
   </div>
 
   <div>
@@ -61,12 +58,12 @@
         <% @budget.categories.each do |category| %>
           <option value="<%= category.title %>"><%= category.title %></option>        
         <% end %>
-      </select>
+      </select><br>
       <label>Description:</label>
-      <input name="description" type="text">
+      <input name="description" type="text"><br>
       <label>Transaction Amount:</label>
-      <input name="transaction_amt" type="number">
-      <button class="btn stacked-btn" type="submit">Add Transaction</button>
+      <input name="transaction_amt" type="number"><br>
+      <button class="btn" type="submit">Add Transaction</button>
     </form>
   </div>
 
@@ -76,16 +73,16 @@
       <thead>
         <tr>
           <th class="table-head">Amount</th>
-          <th class="table-head">Description</th>
-          <th class="table-head">Category</th>
+          <th class="table-head categories">Category</th>
+          <th class="table-head categories">Description</th>
         </tr>
       </thead>
       <tbody>
         <% all_transactions.each do |transaction| %>
           <tr>
             <td>$<%= transaction.amount %></td>
+            <td><%= transaction.category.title %></td>
             <td><%= transaction.description.downcase %></td>
-            <td><%= transaction.category %></td>
           </tr>
         <% end %>
       </tbody>
@@ -98,7 +95,7 @@
     <form method="post" action="/budget/create">
       <label>Whats the name of your budget?</label>
       <input name="budget_name" type="text">
-      <button type="submit">Create Budget</button>
+      <button class="btn" type="submit">Create Budget</button>
     </form>
   </div>
 <% end %>

@@ -11,8 +11,6 @@ configure do
   disable :protection
 end
 
-########## Constants ##########
-
 ########## Classes ##########
 
 class Budget
@@ -37,8 +35,8 @@ class Budget
   end
 
   def find_category(id)
-    @categories.each do |category|
-      return category if category.id == id
+    @categories.select do |category|
+      category if category.id == id
     end
   end
 
@@ -68,9 +66,9 @@ class Budget
 
   def add_funds_to_log(amount)
     if amount > 0
-      @funds_log << { amount: amount, type: "added", date: DateTime.now }
+      @funds_log << { amount: amount, type: "deposit", date: DateTime.now }
     elsif amount < 0
-      @funds_log << { amount: amount, type: "deducted", date: DateTime.now }
+      @funds_log << { amount: amount, type: "withdraw", date: DateTime.now }
     end
   end
 
@@ -123,10 +121,6 @@ class Transaction
 end
 
 ########## Methods ##########
-
-# def add_funds(amount)
-#   @budget.balance = @budget.balance + amount.to_i
-# end
 
 def select_category(id)
   @budget.categories.select { |category| category.id == id }.first

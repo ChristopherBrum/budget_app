@@ -4,11 +4,22 @@
   background: rgb(41,39,73);
   background: linear-gradient(320deg, rgba(41,39,73,1) 0%, rgba(243,199,252,1) 35%, rgba(240,240,240,1) 100%);
   font-family: 'Courier New', Courier, monospace;
+  margin: auto;
+  width: 1000px;
+}
+
+.message-active {
+  margin-top: 55px;
 }
 
 #banner {
   background-color: rgb(122, 255, 164);
   padding: .5em 2em;
+  width: 100vw;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
 }
 
 #menu-container {
@@ -21,14 +32,15 @@ button.btn {
   border-radius: 5px;
   box-shadow: 2px 2px 7px 1px #969696;
   background-color: #e6e6e6;
-}
-
-button.btn.stacked-btn {
   margin-top: .5em;
 }
 
+button.btn-nav {
+  margin-top: 0;
+}
+
 div {
-  max-width: 1100px;
+
   margin: 1em;
   padding: 1em;
   border: 2px solid #a25ab6;
@@ -87,6 +99,10 @@ th.table-head.buttons, td.buttons {
   width: 50px;
 }
 
+select {
+  padding: 5px;
+  min-width: 150px;
+}
 
 /* category list styling */
 

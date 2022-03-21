@@ -1,5 +1,5 @@
 <div>
-  <h3>Edit <%= @category.title %></h3>
+  <h3>Edit <strong><%= @category.title %></strong></h3>
   <form method="post" action="/category/<%= @id %>/edit">
     <label>Category Title: </label>
     <input name="cat_title" type="text" value="<%= @category.title %>"><br>
@@ -8,7 +8,7 @@
     <button class="btn" type="submit">Update Category</button>
   </form>
   <form method="post" action="/category/<%= @id %>/delete">
-    <button class="btn stacked-btn" type="submit">Delete Category</button>
+    <button class="btn" type="submit">Delete Category</button>
   </form>
   
 </div>
@@ -21,23 +21,35 @@
       <% @budget.categories.each do |category| %>
         <option value="<%= category.title %>"><%= category.title %></option>        
       <% end %>
-    </select>
+    </select><br>
     <label>Description:</label>
-    <input name="description" type="text">
+    <input name="description" type="text"><br>
     <label>Transaction Amount:</label>
-    <input name="transaction_amt" type="number">
+    <input name="transaction_amt" type="number"><br>
     <button class="btn" type="submit">Add Transaction</button>
   </form>
 </div>
 
 <div>
   <h3><%= @category.title %> Transactions:</h3>
-  <ul>
-    <% @category.transactions.each do |transaction| %>
-      <li>
-        <%= transaction.amount %>
-        <%= transaction.description %>
-      </li>
-    <% end %>
-  </ul>
+  <table>
+    <thead>
+      <tr>
+        <th class="table-head">Amount</th>
+        <th class="table-head">Description</th>
+        <th class="table-head">Date</th>
+        <th class="table-head">Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @category.transactions.each do |transaction| %>
+        <tr>
+          <td><%= transaction.amount %></td>
+          <td><%= transaction.description %></td>
+          <td></td>
+          <td></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
