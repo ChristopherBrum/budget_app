@@ -34,10 +34,10 @@ class Budget
     @categories << Category.new(title, allotted_amt, id)
   end
 
-  def find_category(id)
+  def find_category_by_id(id)
     @categories.select do |category|
       category if category.id == id
-    end
+    end.first
   end
 
   def find_category_by_title(given_title)
@@ -51,31 +51,31 @@ class Budget
   end
 
   def delete_category(id)
-    index = nil
+    target_index = 0
 
     @categories.each_with_index do |category, idx|
       if category.id == id
-        index = idx
+        target_index = idx 
       end
     end
 
-    @categories.delete_at(index)
+    @categories.delete_at(target_index)
   end
 
   private
 
   def add_funds_to_log(amount)
-    if amount > 0
-      @funds_log << { amount: amount, type: "deposit", date: DateTime.now }
-    elsif amount < 0
-      @funds_log << { amount: amount, type: "withdraw", date: DateTime.now }
+    if amount.positive?
+      @funds_log << { amount: amount, type: 'deposit', date: DateTime.now }
+    elsif amount.negative?
+      @funds_log << { amount: amount, type: 'withdraw', date: DateTime.now }
     end
   end
 
   def new_category_id
     return 1 if @categories.empty?
 
-    max = @categories.max_by { |category| category.id }
+    max = @categories.max_by(&:id)
     max.id + 1
   end
 end
@@ -95,16 +95,12 @@ class Category
     @transactions << Transaction.new(title, description, amount, id)
   end
 
-  def find_transaction(id)
-
-  end
-
   private
 
   def new_transaction_id
     return 1 if @transactions.empty?
 
-    max = @transactions.max_by { |category| category.id }
+    max = @transactions.max_by(&:id)
     max.id + 1
   end
 end
@@ -179,7 +175,8 @@ get '/category/:category_id' do
 end
 
 post '/category/:category_id/edit' do
-  id = params[:category_id].to_i
+  id = params[:category_id]
+
   category = select_category(id)
 
   category.title = params[:cat_title]
@@ -190,8 +187,12 @@ end
 
 # Delete category
 post '/category/:category_id/delete' do
-  id  = params[:category_id]
-  delete_category(@budget.categories)
+  id = params[:category_id].to_i
+  category_title = @budget.find_category_by_id(id).title
+
+  @budget.delete_category(@budget.categories)
+  session[:message] = "The category '#{category_title}' has been deleted."
+  redirect '/'
 end
 
 ########## TRANSACTIONS ##########
@@ -201,16 +202,13 @@ get '/transaction/add' do
 end
 
 post '/transaction/create' do
-  category = params[:category]
+  category_title = params[:category]
   description = params[:description]
   amount = params[:transaction_amt].to_i
-  category = @budget.find_category_by_title(category)
+  category = @budget.find_category_by_title(category_title)
 
   category.new_transaction(category, description, amount)
-  session[:message] = "A new transaction has been entered."
-
-  puts params ## not needed
-  
+  session[:message] = 'A new transaction has been entered.'
   redirect '/'
 end
 
@@ -225,16 +223,16 @@ end
 post '/budget/add_funds' do
   deposit_amount = params[:deposit_amount].to_i
 
-  if deposit_amount > 0
+  if deposit_amount.positive?
     @budget.add_funds(deposit_amount)
     session[:message] = "You've successfully added funds."
     redirect '/'
-  elsif deposit_amount < 0
+  elsif deposit_amount.negative?
     @budget.add_funds(deposit_amount)
     session[:message] = "You've successfully deducted funds."
     redirect '/'
   else
-    session[:message] = "You must enter a positive or negative number. "
+    session[:message] = 'You must enter a positive or negative number.'
     erb :add_funds
   end
 end
@@ -242,11 +240,13 @@ end
 # Create a new budget
 post '/budget/create' do
   session[:budget] = Budget.new(params[:budget_name])
+  session[:message] = 'A new budget has been created.'
   redirect '/'
 end
 
 # Delete the budget
-post "/budget/delete" do
+post '/budget/delete' do
+  session[:message] = "The budget '#{@budget.name}' has been deleted."
   session.delete(:budget)
   redirect '/'
 end

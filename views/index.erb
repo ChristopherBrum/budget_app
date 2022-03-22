@@ -1,7 +1,7 @@
 <% if session[:budget] %>
   <div id="menu-container">
       <form method="get" action="/budget/add_funds">
-        <button class="btn btn-nav" type="submit">Add Funds</button>
+        <button class="btn btn-nav" type="submit">Add/Deduct Funds</button>
       </form>
 
       <form method="get" action="/category/new">
@@ -47,7 +47,7 @@
         <% end %>
       </tbody>
     </table>
-    <h3>Monthly Expenses: $<%= @budget.calc_expenses %></h3>
+    <h3>Estimated Monthly Expenses: $<%= @budget.calc_expenses %></h3>
   </div>
 
   <div>

@@ -22,7 +22,7 @@
         <% if session[:budget] %>
           <h1><%= @budget.name %></h1>
           <h5>Funds Added: $<%= @budget.balance %></h5>
-          <h5>Monthly Expenses: $<%= @budget.calc_expenses %></h5>
+          <h5>Estimated Monthly Expenses: $<%= @budget.calc_expenses %></h5>
           <h5>Transactions Total: $<%= transactions_total %></h5>
           <% if current_balance > 0 %>
             <h3 class="bal green">Current Balance: <strong>$<%= current_balance %></strong></h3>
