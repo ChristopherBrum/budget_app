@@ -3,8 +3,6 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'tilt/erubis'
 
-require 'pry'
-
 configure do
   enable :sessions
   set :session_secret, 'session_secret_for_budget_app'
