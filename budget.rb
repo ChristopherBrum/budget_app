@@ -248,3 +248,7 @@ post '/budget/delete' do
   session.delete(:budget)
   redirect '/'
 end
+
+not_found do
+  redirect '/' 
+end
