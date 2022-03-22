@@ -1,6 +1,6 @@
 require 'yaml'
 require 'sinatra'
-require 'sinatra/reloader'
+require 'sinatra/reloader' if development?
 require 'tilt/erubis'
 
 require 'pry'
@@ -30,8 +30,7 @@ class Budget
   end
 
   def new_category(title, allotted_amt)
-    id = new_category_id
-    categories << Category.new(title, allotted_amt, id)
+    categories << Category.new(title, allotted_amt, new_category_id())
   end
 
   def valid_category_id?(given_id)
@@ -39,9 +38,7 @@ class Budget
   end
 
   def find_category_by_id(id)
-    categories.select do |category|
-      category.id == id
-    end.first
+    categories.select { |category| category.id == id }.first
   end
 
   def find_category_by_title(given_title)
@@ -134,8 +131,9 @@ end
 
 before do
   @budget = session[:budget]
-  @session = session.inspect
 end
+
+########## HOME / INDEX ##########
 
 get '/' do
   erb :index
