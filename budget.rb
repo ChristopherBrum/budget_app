@@ -31,12 +31,16 @@ class Budget
 
   def new_category(title, allotted_amt)
     id = new_category_id
-    self.categories << Category.new(title, allotted_amt, id)
+    categories << Category.new(title, allotted_amt, id)
+  end
+
+  def valid_category_id?(given_id)
+    categories.any? { |category| category.id == given_id }
   end
 
   def find_category_by_id(id)
     categories.select do |category|
-      category if category.id == id
+      category.id == id
     end.first
   end
 
@@ -45,17 +49,13 @@ class Budget
   end
 
   def calc_expenses
-    categories.map { |category| category.amount }.sum
+    categories.map(&:amount).sum
   end
 
-  def delete_category(id)
-    target_index = 0
-
-    categories.each_with_index do |category, idx|
-      target_index = idx if category.id == id
+  def delete_category(given_category)
+    self.categories = categories.select do |category|
+      !(given_category == category)
     end
-
-    categories.delete_at(target_index)
   end
 
   private
@@ -88,7 +88,7 @@ class Category
 
   def new_transaction(title, description, amount)
     id = new_transaction_id
-    self.transactions << Transaction.new(title, description, amount, id)
+    transactions << Transaction.new(title, description, amount, id)
   end
 
   private
@@ -112,11 +112,7 @@ class Transaction
   end
 end
 
-########## Methods ##########
-
-def select_category(id)
-  @budget.categories.select { |category| category.id == id }.first
-end
+########## Global Methods ##########
 
 def all_transactions
   @budget.categories.each_with_object([]) do |category, array|
@@ -165,29 +161,39 @@ end
 # Display form to edit category
 get '/category/:category_id' do
   @id = params[:category_id].to_i
-  @category = select_category(@id)
 
-  erb :category
+  if @budget.valid_category_id?(@id)
+    @category = @budget.find_category_by_id(@id)
+    erb :category
+  else
+    session[:message] = 'Invalid category ID.'
+    redirect '/'
+  end
 end
 
+# Edit existing category
 post '/category/:category_id/edit' do
-  id = params[:category_id]
+  id = params[:category_id].to_i
 
-  category = select_category(id)
-
-  category.title = params[:cat_title]
-  category.amount = params[:cat_allotted_funds].to_i
-  session[:message] = "#{category.title} has been updated."
-  redirect '/'
+  if @budget.valid_category_id?(id)   
+    category = @budget.find_category_by_id(id)
+    category.title = params[:cat_title]
+    category.amount = params[:cat_allotted_funds].to_i
+    session[:message] = "#{category.title} has been updated."
+    redirect '/'
+  else
+    session[:message] = 'Invalid category ID.'
+    erb :category
+  end
 end
 
 # Delete category
 post '/category/:category_id/delete' do
   id = params[:category_id].to_i
-  category_title = @budget.find_category_by_id(id).title
+  category = @budget.find_category_by_id(id)
 
-  @budget.delete_category(@budget.categories)
-  session[:message] = "The category '#{category_title}' has been deleted."
+  @budget.delete_category(category)
+  session[:message] = "The category '#{category.title}' has been deleted."
   redirect '/'
 end
 
