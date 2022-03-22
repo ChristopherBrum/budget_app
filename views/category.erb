@@ -1,5 +1,5 @@
 <div>
-  <h3>Edit <strong><%= @category.title %></strong></h3>
+  <h3>Edit <strong><%= @category.title %>:</strong></h3>
   <form method="post" action="/category/<%= @id %>/edit">
     <label>Category Title: </label>
     <input name="cat_title" type="text" value="<%= @category.title %>"><br>
@@ -10,7 +10,6 @@
   <form method="post" action="/category/<%= @id %>/delete">
     <button class="btn" type="submit">Delete Category</button>
   </form>
-  
 </div>
 
 <div>

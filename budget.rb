@@ -31,51 +31,47 @@ class Budget
 
   def new_category(title, allotted_amt)
     id = new_category_id
-    @categories << Category.new(title, allotted_amt, id)
+    self.categories << Category.new(title, allotted_amt, id)
   end
 
   def find_category_by_id(id)
-    @categories.select do |category|
+    categories.select do |category|
       category if category.id == id
     end.first
   end
 
   def find_category_by_title(given_title)
-    @categories.select { |category| category.title == given_title }.first
+    categories.select { |category| category.title == given_title }.first
   end
 
   def calc_expenses
-    total = 0
-    @categories.each { |category| total += category.amount }
-    total
+    categories.map { |category| category.amount }.sum
   end
 
   def delete_category(id)
     target_index = 0
 
-    @categories.each_with_index do |category, idx|
-      if category.id == id
-        target_index = idx 
-      end
+    categories.each_with_index do |category, idx|
+      target_index = idx if category.id == id
     end
 
-    @categories.delete_at(target_index)
+    categories.delete_at(target_index)
   end
 
   private
 
   def add_funds_to_log(amount)
     if amount.positive?
-      @funds_log << { amount: amount, type: 'deposit', date: DateTime.now }
+      funds_log << { amount: amount, type: 'deposit', date: DateTime.now }
     elsif amount.negative?
-      @funds_log << { amount: amount, type: 'withdraw', date: DateTime.now }
+      funds_log << { amount: amount, type: 'withdraw', date: DateTime.now }
     end
   end
 
   def new_category_id
-    return 1 if @categories.empty?
+    return 1 if categories.empty?
 
-    max = @categories.max_by(&:id)
+    max = categories.max_by(&:id)
     max.id + 1
   end
 end
@@ -92,15 +88,15 @@ class Category
 
   def new_transaction(title, description, amount)
     id = new_transaction_id
-    @transactions << Transaction.new(title, description, amount, id)
+    self.transactions << Transaction.new(title, description, amount, id)
   end
 
   private
 
   def new_transaction_id
-    return 1 if @transactions.empty?
+    return 1 if transactions.empty?
 
-    max = @transactions.max_by(&:id)
+    max = transactions.max_by(&:id)
     max.id + 1
   end
 end
